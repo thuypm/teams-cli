@@ -16,6 +16,11 @@ const router = new Router({
       component: allGroup
     },
     {
+      path: '/index',
+      name: 'index',
+      component: index
+    },
+    {
       path: '/signin',
       name: 'signin',
       component: signin

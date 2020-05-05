@@ -5,11 +5,11 @@
               <Header/>
         </div>
 		<div :class="{'col-9custom': option, 'col-11custom': !option}">
-			<Video @changeOpt="option=$event"/>
+			<Video @changeOpt="option=$event" :socket="socket" :roomId="$route.params.id" />
 		</div>
 				<div class=" col-2custom">
-				<Chat v-if="option==1" />
-				<ListUser v-if="option==2"/>
+				<Chat v-if="option==1"  :socket="socket"  :roomId="$route.params.id"  />
+				<ListUser v-if="option==2"  :socket="socket"  :roomId="$route.params.id" />
 				</div>
 	
 </div>
@@ -23,24 +23,34 @@ import chat from './meeting/chat';
 import listUser from './meeting/listUser';
 import io from 'socket.io-client';
 
-// var socket = io.connect('http://localhost:3000');
+
+var socket = io.connect('http://localhost:3000');
   export default {
+	
          name: 'index',
   	    components: {
 			  Header:header,
 			  Chat: chat,
 			Video:video,
 			ListUser:listUser
-
+	  },
+	  created(){
+		 
+		  this.socket.emit('join', this.username, this.$route.params.id);
 	  },
 	 data(){
 		 return{
-			 	option:0,
+				 option:0,
+				 socket: socket,
+			     username: localStorage.username
 		 }
 	 } 
 	  }
 </script>
 <style>
+.col-2custom{
+	
+}
 .card{
     /* height: 700px; */
 	height: 100vh;

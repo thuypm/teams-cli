@@ -65,7 +65,7 @@
              this.error = true;
        }else
        {
-           console.log(res)
+
            this.error = false;
            localStorage.setItem('token', res.data.token);
            localStorage.setItem('username', res.data.username);

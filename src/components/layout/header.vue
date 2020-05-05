@@ -37,9 +37,8 @@
      </div>
  	<div class="menu-footer">
 					<ul>
-            <li>
-							<img v-bind:src="'https://media.licdn.com/dms/image/C560BAQHMnA03XDdf3w/company-logo_200_200/0?e=2159024400&v=beta&t=C7KMOtnrJwGrMXmgIk2u1B8a7VRfgxMwXng9cdP9kZk'" class="rounded-circle user_img_msg">
-            </li>
+           
+							<img :src="'http://localhost:3000/user/'+username+'.jpg'" class="rounded-circle user_img_msg">
             <li class="" @click="signout()">
                   <a href="#">
                       <div>
@@ -57,7 +56,7 @@ export default {
   data()
   {
     return {
-
+      username: localStorage.username,
     }
   },
   methods:{

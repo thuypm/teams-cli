@@ -3,7 +3,7 @@
 					
 						<div class="card-body msg_card_body flex-fill" id="message"	>
 							<div v-for="(message, index) in listMess" :key="index" > 
-									<div class="d-flex justify-content-end mb-4" v-if="message.sent == user.username">
+									<div class="d-flex justify-content-end mb-4" v-if="message.sent == username">
 								<div class="msg_cotainer_send">
 										{{message.content}}
 									<span class="msg_time_send">{{message.time| DAY()}}</span>
@@ -52,6 +52,7 @@ import axios from 'axios';
 // var socket = io.connect('http://localhost:3000');
 var timeout;
      export default {
+		 props: ['roomId', 'socket'],
          name: 'index',
   	    components: {
 
@@ -78,31 +79,34 @@ var timeout;
 		
 	],
 	numberOfMess: Number,
-	username: '',
 	content: '',
-	user: {
-		username: 'img1'
-	},
+	     username: localStorage.username, 
 	typing: false,
 		}
 		 },
 
  created(){
 			// this.loadData();
-			// console.log(this.$route.params.id);
+			this.socket.on('ib_mess', (ibMess)=>{
+				this.typing = false;
+				this.listMess.push(ibMess);
+				this.$nextTick(function(){
+						var messageBox =  document.getElementById('message');
+						messageBox.scrollTop = messageBox.scrollHeight
+					})
+			})
 		 },
  filters: {
   /** Viết hoa chữ đầu tiên */
   DAY: function (time) {
   		var d= new Date();
-				var temp = time - (d.getTimezoneOffset() * 60000);
-				var reTime = new Date(temp);
+						var reTime = new Date(time); 
 				var time = reTime.getHours() + ":" + reTime.getMinutes();
-				var day = reTime.getDay()+',th ' +reTime.getMonth()+ ',' + reTime.getFullYear();	
+				var day = reTime.getDate()+',th ' +(reTime.getMonth() +1)+ ',' + reTime.getFullYear();	
     return time + '  ' + day;
   }
 },
-	// methods:{
+	methods:{
 		
 	// loadData(){
 	// 		var user = JSON.parse(localStorage.user);
@@ -124,24 +128,24 @@ var timeout;
 	// 	})
 	// 	socket.emit('getFriendMess', friend.messID);
 	// },
-	// send(){
-	// 	  var d = new Date();
-    // var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-	// 	if(this.content.trim() != '')
-	// 		{
-	// 		socket.emit('send_mess',this.selectPerson.username, this.selectMessID, {
-	// 		type: 'text',
-	// 		content: this.content,
-	// 		sent: this.username,
-	// 		time: utc
+	send(){
+		  var d = new Date();
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+		if(this.content.trim() != '')
+			{
+			this.socket.emit('send_mess',this.roomId, {
+			type: 'text',
+			content: this.content,
+			sent: this.username,
+			time: utc
 			
-	// 	});
-	// 	this.content = '';
+		});
+		this.content = '';
 
 		
-	// 		}
-	// },
-	// areTyping(event){
+			}
+	},
+	areTyping(event){
 	// 	var self = this;
 	// 	if(event.keyCode != 13 && event.which != 13)
 	// {	 socket.emit('typing' , self.username, self.selectMessID, true);
@@ -153,54 +157,62 @@ var timeout;
 	// 			}, 3000);
 		  
 	// 	   }
-	// }
+	},
 	// },
-	// mounted: function () {
-	// var self = this;
-	// 		socket.on('res_connect', function(data){
-	// 			self.friends = data.friends;
-	// 			localStorage.user = JSON.stringify(data);
-	// 			if(self.friends.length	!= 0){
-	// 				self.getMess(self.friends[0]);
-	// 			}
-	// 		})
-	// 		socket.on('res_select', function(value){
-	// 		self.listMess= value.message;
-	// 		self.$nextTick(function(){	
-	// 					var messageBox =  document.getElementById('message');
-	// 					messageBox.scrollTop = messageBox.scrollHeight
-	// 				})
+	mounted: function () {
+	var self = this;
+			// socket.on('res_connect', function(data){
+			// 	self.friends = data.friends;
+			// 	localStorage.user = JSON.stringify(data);
+			// 	if(self.friends.length	!= 0){
+			// 		self.getMess(self.friends[0]);
+			// 	}
+			// })
+			// socket.on('res_select', function(value){
+			// self.listMess= value.message;
+			// self.$nextTick(function(){	
+			// 			var messageBox =  document.getElementById('message');
+			// 			messageBox.scrollTop = messageBox.scrollHeight
+			// 		})
 			
-	// 		});
-	// 		socket.on('typing', function(who, status){
-	// 		if(who != self.username && status == true)
-	// 					{	
-	// 					self.typing = true;	
-	// 							self.$nextTick(function(){
-	// 					var messageBox =  document.getElementById('message');
-	// 					messageBox.scrollTop = messageBox.scrollHeight
-	// 				})
+			// });
+			// socket.on('typing', function(who, status){
+			// if(who != self.username && status == true)
+			// 			{	
+			// 			self.typing = true;	
+			// 					self.$nextTick(function(){
+			// 			var messageBox =  document.getElementById('message');
+			// 			messageBox.scrollTop = messageBox.scrollHeight
+			// 		})
 								
-	// 					}	
-	// 		if(status == false)
-	// 					self.typing = false;
-	// 			})
-	// 		socket.on('ib_mess', function(ibMess, sent){
-	// 			self.typing = false;
-		
-	// 			self.listMess.push(ibMess);
-	// 			self.$nextTick(function(){
-	// 					var messageBox =  document.getElementById('message');
-	// 					messageBox.scrollTop = messageBox.scrollHeight
-	// 				})
-	// 		})
+				//		}	
+			// if(status == false)
+			// 			self.typing = false;
+			// 	})
+	
 
-	// }
+	}}
 
     }
 </script>
 <style  scoped>
-
+.type_msg{
+border:0
+}
+.card-footer{
+	/* border: 1px solid #2c3e50 */
+}
+.input-group{
+	border-radius: 0;
+}
+.input-group-text{
+	background: #2c3e50;
+	color: #fff;
+	border-radius: 0;
+}
+.input-group-text:hover{
+	background-color: #435f7a;
+}
    .user_img_msg{
         height: 40px;
         width: 40px;
@@ -208,7 +220,7 @@ var timeout;
     
     }
    .msg_cotainer{
-        min-width: 75px;
+        min-width: 85px;
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 10px;
@@ -218,12 +230,13 @@ var timeout;
     position: relative;
     }
     .msg_cotainer_send{
-        min-width: 75px;
+        min-width: 85px;
     margin-top: auto;
     margin-bottom: auto;
     margin-right: 10px;
     /* border-radius: 5px; */
-    background-color: #78e08f;
+    background-color: #2c3e50;
+	color: #fff;
     padding: 10px;
     position: relative;
     }

@@ -125,7 +125,7 @@ export default {
                      action: 0                   }
                  
                   } 
-                      axios.post("http://localhost:3000/editRoom",upLen, this.axiosConfig).then(res=>{
+                      axios.post("http://localhost:3000/room/editRoom",upLen, this.axiosConfig).then(res=>{
                         if(res.data)
                           {
                             this.$emit('editGroup', res.data);

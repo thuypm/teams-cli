@@ -94,7 +94,7 @@ import editGroup from './groupModal/editGroup';
                   this.Notice("Bạn đã join nhóm này");
                   return;
               }
-          axios.post("http://localhost:3000/editRoom",upLen, this.axiosConfig).then(res=>{
+          axios.post("http://localhost:3000/room/editRoom",upLen, this.axiosConfig).then(res=>{
             if(!res.data)
               {
                
