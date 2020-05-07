@@ -112,12 +112,9 @@
 body,html{
     height: 100%;
     margin: 0;
-    background: #7F7FD5;
-   background: -webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
-    background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);
 }
 
-.card-container.card {
+.card-container .card {
     max-width: 350px;
     padding: 40px 40px;
 }

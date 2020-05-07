@@ -1,46 +1,49 @@
 <template>
-  <div class="card">
-    <div class="card-body msg_card_body flex-fill" id="message">
-      <!-- {{roomId}} -->
-    </div>
-    <div id="menuCall" style="z-index:2; padding-bottom: 20px;">
-      <span class="btn btn-success">30:20</span>
-      <button
-        v-on:click="setVideo(!camera, micro)"
-        type="button"
-        class="btn mn btn-outline-secondary"
-      >
-        <i :class="{'fa-video': camera, 'fa-video-slash': !camera}" class="fa fa-lg"></i>
-      </button>
-      <button
-        v-on:click="setVideo(camera, !micro)"
-        type="button"
-        class="btn mn btn-outline-secondary"
-      >
-        <i :class="{'fa-microphone': micro, 'fa-microphone-slash': !micro}" class="fa fa-lg"></i>
-      </button>
-      <button type="button" class="btn mn btn-outline-secondary">
-        <i class="fas fa-desktop fa-lg"></i>
-      </button>
-      <button
-        v-on:click="changeOpt(1)"
-        type="button"
-        :class="{ 'btn-outline-secondary': !chatOpt, 'btn-secondary': chatOpt}"
-        class="btn mn"
-      >
-        <i class="fas fa-comments fa-lg"></i>
-      </button>
-      <button
-        v-on:click="changeOpt(2)"
-        type="button"
-        :class="{ 'btn-outline-secondary': !listOpt, 'btn-secondary': listOpt}"
-        class="btn mn"
-      >
-        <i class="fa fa-user fa-lg"></i>
-      </button>
-      <button type="button" class="btn mn btn-danger">
-        <i class="fa fa-phone fa-lg"></i>
-      </button>
+  <div class="" style="">
+    <canvas id="canvas" style="display: none"></canvas>
+    <div class=" flex-fill screen"  style="background:black;">
+        <img style="object-fit: contain;"   v-bind:src="screen"
+         :class="{'card-img-top': true}">
+       
+      <div id="menuCall" style="z-index:2;">
+        <span class="btn btn-success">30:20</span>
+        <button
+          v-on:click="setVideo(!camera, micro)"
+          type="button"
+          class="btn mn btn-outline-dark"
+        >
+          <i :class="{'fa-video': camera, 'fa-video-slash': !camera}" class="fa fa-lg"></i>
+        </button>
+        <button
+          v-on:click="setVideo(camera, !micro)"
+          type="button"
+          class="btn mn btn-outline-dark"
+        >
+          <i :class="{'fa-microphone': micro, 'fa-microphone-slash': !micro}" class="fa fa-lg"></i>
+        </button>
+        <button @click="shareScreen" type="button" class="btn mn btn-outline-dark">
+          <i class="fas fa-desktop fa-lg"></i>
+        </button>
+        <button
+          v-on:click="changeOpt(1)"
+          type="button"
+          :class="{ 'btn-outline-dark': !chatOpt, 'btn-dark': chatOpt}"
+          class="btn mn"
+        >
+          <i class="fas fa-comments fa-lg"></i>
+        </button>
+        <button
+          v-on:click="changeOpt(2)"
+          type="button"
+          :class="{ 'btn-outline-dark': !listOpt, 'btn-dark': listOpt}"
+          class="btn mn"
+        >
+          <i class="fa fa-user fa-lg"></i>
+        </button>
+        <button type="button" class="btn mn btn-danger">
+          <i class="fa fa-phone fa-lg"></i>
+        </button>
+      </div>
     </div>
 
     <div class="row flex-row">
@@ -57,7 +60,7 @@
       </div>
       <div v-for="(usr, index) in listFriend" :key="index" class="vid">
         <div>
-          <img :src="'http://localhost:3000/user/'+'thuypm'+'.jpg'" class="usr_img rounded-circle" />
+          <img :src="'http://localhost:3000/user/'+usr.username+'.jpg'" class="usr_img rounded-circle" />
           <p style="padding-top: 15px; margin:0">{{usr.username}}</p>
         </div>
       </div>
@@ -81,35 +84,71 @@ export default {
       username: localStorage.username,
       listFriend: [],
       listCli: [],
-      myToken: "",
       camera: false,
       micro: false,
       chatOpt: 0,
       listOpt: 0,
       videoUser: "",
-      videoSent: Object,
-      listVideo: []
+      listVideo: [],
+      screen: ''
     };
   },
   created() {
     // this.socket.emit('newUser', this.roomId, this.username);
+    this.screen='http://localhost:3000/user/'+this.username+'.jpg';
+       this.socket.on("screen", (Id, video) => {
+          if(Id != this.socket.id)
+            this.screen = video;
+       })
+       this.socket.on("stopScreen", (Id) => {
+         console.log('stop');
+          if(Id != this.socket.id)
+              this.screen='http://localhost:3000/user/'+this.username+'.jpg';
+       })
+    this.socket.on("exitUser", Id => {
+      var vt1 = this.listCli.findIndex(e => e.Id == Id);
+      this.listCli.splice(vt1, 1);
+      var vt2 = this.listFriend.findIndex(e => e.Id == Id);
+      if (vt2 != -1) {
+        this.listFriend.splice(vt2, 1);
+        if (myPeer.length) myPeer.splice(vt2, 1);
+      }
+      var vt3 = this.listVideo.findIndex(e => e.Id == Id);
+      if (vt3 != -1) {
+        peer[vt3].destroy();
+        this.listVideo.splice(vt3, 1);
+        peer.splice(vt3, 1);
+      }
+    });
     this.socket.on("newUser", (listUser, username, Id) => {
-      if (Id != this.socket.id)
+      if (Id != this.socket.id) {
         this.listFriend.push({
           username: username,
           Id: Id
         });
-      else {
+        if (this.videoUser) {
+          var tmp = myPeer.push(
+            new Peer({
+              initiator: true,
+              trickle: false,
+              stream: this.videoUser
+            })
+          );
+          myPeer[tmp - 1].on("signal", token => {
+            this.socket.emit("onVideo", Id, token);
+          });
+        }
+      } else {
         this.listFriend = listUser;
       }
-     this.listFriend;
-      this.listCli =  this.listFriend.slice(0, this.listFriend.length);
-      // console.log(this.listCli);
+      this.listFriend;
+      this.listCli = this.listFriend.slice(0, this.listFriend.length);
+
     });
     this.socket.on("onVideo", (token, Id) => {
       if (Id != this.socket.id) {
         const found = this.listFriend.findIndex(element => element.Id == Id);
-        if (found != -1) this.listFriend.splice(found, 1);
+        this.listFriend.splice(found, 1);
         var p = new Peer({ trickle: false });
         var i = peer.push(p);
         peer[i - 1].signal(token);
@@ -122,35 +161,80 @@ export default {
             Id: Id
           });
         });
-        peer[i - 1].on("error", err => console.log("error", err));
-        // peer[i - 1].on("end", () => {
-        //   // console.log(this.listVideo[i - 1]);
-        //   this.listVideo[i - 1].getTracks().forEach(function(track) {
-        //     track.stop();
-        //   });
-        //   this.listVideo.splice(i - 1, 1);
-        // });
-        // console.log(this.listFriend);
+        peer[i - 1].on("error", err => {
+          console.log("error", err);
+        });
+
+;
       }
     });
     this.socket.on("res_video", (Id, tk) => {
       if (Id != this.socket.id) {
         var vt = this.listCli.findIndex(element => element.Id == Id);
-        console.log(vt);
         myPeer[vt].signal(tk);
+      }
+    });
+    this.socket.on("offVideo", dta => {
+      if (this.socket.id != dta.Id) {
+        var idx = this.listVideo.findIndex(e => e.Id == dta.Id);
+        if (idx != -1) {
+          this.listVideo.splice(idx, 1);
+          peer.splice(idx, 1);
+          this.listFriend.push(dta);
+        }
       }
     });
   },
   methods: {
+    shareScreen() {
+      let captureStream = null;
+      captureStream = navigator.mediaDevices.getDisplayMedia({
+            audio: false,
+            video: true,
+            cursor: 'always'
+      });
+
+      captureStream
+        .then(stream => {
+         var video = document.createElement('video');
+         video.autoplay = true;
+         video.srcObject = stream;
+          var canvas = document.getElementById("canvas");
+          canvas.width = 960;
+          canvas.height = 540;
+          var context = canvas.getContext("2d");
+          context.width = canvas.width;
+          context.height = canvas.height;   
+         var running =  setInterval(() => {
+             context.drawImage(video, 0,0, context.width, context.height);
+            var vid = canvas.toDataURL('image/webp')
+            this.socket.emit('screen',this.roomId, vid); 
+            
+            if(!stream.active)
+            {
+               this.socket.emit('stopScreen', this.roomId);
+                 clearInterval(running);
+            }
+          }, 70);
+        })
+        .catch(err => console.log(err));
+    },
     setVideo(camera, micro) {
       this.camera = camera;
       this.micro = micro;
+      if (this.videoUser) {
+        this.socket.emit("offVideo", this.socket.id, this.roomId);
+        myPeer.forEach((e, index) => {
+          e.destroy();
+        });
+        myPeer = [];
+      }
       if (camera || micro)
         navigator.mediaDevices
           .getUserMedia({ audio: micro, video: camera })
           .then(stream => {
             this.videoUser = stream;
-            this.listCli.forEach((e, index) =>{
+            this.listCli.forEach((e, index) => {
               myPeer[index] = new Peer({
                 initiator: true,
                 trickle: false,
@@ -159,32 +243,15 @@ export default {
               myPeer[index].on("signal", token => {
                 this.socket.emit("onVideo", e.Id, token);
               });
-
-              //  myPeer[index].on("stream", stream=>{
-              //    console.log('bat video tro lại');
-              //    this.listVideo.push({
-              //      Id: 'lol', stream:stream
-              //    })
-              //     this.listFriend.splice(index);
-              //  })
             });
-            // if(peer.length)
-            // peer.forEach((e,ind)=>{
-             
-            //   e.addStream(stream,()=>{
-            //       console.log('da them video')
-            //   });
-            // })
-    
           })
           .catch(err => console.log(err));
-      else
+      else {
         this.videoUser.getTracks().forEach(function(track) {
           track.stop();
-          myPeer.end(() => {
-            console.log("ket thuc");
-          });
         });
+        this.videoUser = null;
+      }
     },
     changeOpt(val) {
       if (val == 1) {
@@ -208,6 +275,10 @@ export default {
 .btn-outline-secondary:hover{
 	background: #2e353d;;
 } */
+.card-body{
+
+    
+}
 .usr_img {
   padding-top: 10px;
   width: 70px;
@@ -223,5 +294,6 @@ export default {
 }
 .row {
   flex-wrap: nowrap;
+  height:155px
 }
 </style>

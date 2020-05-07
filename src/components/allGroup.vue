@@ -41,7 +41,7 @@
 <script>
 import header from './layout/header.vue';
 import editGroup from './groupModal/editGroup';
-    import axios from 'axios'
+import axios from 'axios'
    export default {
 
   	    components: {
@@ -61,12 +61,7 @@ import editGroup from './groupModal/editGroup';
               showModal: false,
               groupCode:'',
               groupJoin: Object,  
-              groups: [{
-                  img:'/static/img/img1.5080b57.jpg',
-                  name: 'lập trình',
-                  user: ['abcxyz', 'thuypm', 'noname' ,'abcxyz', 'thuypm', 'noname'],
-                  ID: 'bacxyz'
-              }]
+              groups: []
           }
       },
       created(){
@@ -97,7 +92,6 @@ import editGroup from './groupModal/editGroup';
           axios.post("http://localhost:3000/room/editRoom",upLen, this.axiosConfig).then(res=>{
             if(!res.data)
               {
-               
                   this.Notice("Không tìm thấy nhóm này");
               }
               else

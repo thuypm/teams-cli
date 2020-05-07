@@ -69,7 +69,7 @@ export default {
 </script>
 <style  scoped>
  .nav-side-menu {
-  width: 5vw;
+  width: 77px;
   overflow: auto;
   font-size: 12px;
   font-weight: 200;
@@ -198,6 +198,7 @@ export default {
 .menu-footer{
   /* height:12vh */
   /* top:700px !important; */
+  padding-top:  calc(100vh - 400px);
 }
 @media (min-width: 767px) {
   .nav-side-menu .menu-list .menu-content {

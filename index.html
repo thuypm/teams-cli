@@ -12,7 +12,7 @@
     <title>teams</title>
   </head>
   <body>
-    <div id="app" ></div>
+    <div id="app" style="height: 100vh;" ></div>
     <!-- built files will be auto injected -->
   </body>
 </html>
@@ -49,15 +49,22 @@
    padding:0;
  }
  .col-1custom {
-   width: 5vw;
+  width: 77px;
  }
  .col-11custom{
-   width: 95vw;
+   width: calc(100% - 77px);
+   width: -moz-calc(100% - 77px);
+   width: -webkit-calc(100% - 77px);
  }
  .col-9custom {
-   width: 75vw;
+   width: calc(100% - 360px);
+   width: -moz-calc(100% - 360px);
+   width: -webkit-calc(100% - 360px);
  }
  .col-2custom {
-   width: 20vw;
+   width: 282px;
+ }
+ button{
+   border-radius:0 !important;
  }
 </style>

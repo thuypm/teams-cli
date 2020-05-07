@@ -20,10 +20,9 @@
 import header from './layout/header.vue';
 import video from './meeting/video';
 import chat from './meeting/chat';
-import listUser from './meeting/listUser';
-import io from 'socket.io-client';
-
-
+import listUser from './meeting/listUser';	
+var io = require('socket.io-client')
+// import io from 'socket.io-client';
 var socket = io.connect('http://localhost:3000');
   export default {
 	
@@ -58,16 +57,31 @@ var socket = io.connect('http://localhost:3000');
     background-color: #F3F4F4 !important;
 }
 .card-body{
-	padding:0.25rem
+	padding:0.25rem;
+	
 }	
+.screen{
+	  	  display: flex;
+  justify-content: center;
+  /* height: 200px; */
+  /* height:100% */
+ /* height: calc(100% - 300px);*/
+ height: -moz-calc(100vh - 155px);
+ height: -webkit-calc(100vh - 155px); 
+}
 textarea{
 	  font-family: verdana;
 }
+
 #menuCall{
 		  opacity: 0;
-		  /* top: 70vh;
-		  position: fixed; */
-		padding-top: 100px;
+		  position: absolute;
+		bottom: calc( 150px);
+		  background: #fff;
+		padding: 20px 40px 20px 40px;
+		border-radius: 2px;
+		box-shadow:0 6px 6px 0 rgba(0,0,0,0.2),0 6px 6px 0 rgba(0,0,0,0.19) !important;
+margin-bottom: 20px;
  -webkit-transition: opacity 1s; /* Safari */
  transition: opacity 1s;
 	
