@@ -12,7 +12,7 @@
 import header from "./layout/header.vue";
 export default {
 
-		 components: {
+components: {
     Header: header,
 		 }
 }

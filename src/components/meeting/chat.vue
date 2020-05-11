@@ -3,8 +3,16 @@
     <div class="card-body msg_card_body flex-fill" id="message">
       <div v-for="(message, index) in listMess" :key="index">
         <div class="d-flex justify-content-end mb-4" v-if="message.sender == username">
-          <div class="msg_cotainer_send">
-            {{message.content}}
+          <div v-if="message.type=='data:image'" class="msg_cotainer_send">
+            <img :src="'http://localhost:3000/'+ message.content" style="max-width:160px" alt="">
+            <span class="msg_time_send">{{message.time| DAY()}}</span>
+          </div>
+          <div v-else class="msg_cotainer_send">
+            <a :href="'http://localhost:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
+            <i class="fa fa-file" style="color: white"></i>
+            {{message.content | renameFile()}}
+            </a>
+            <p v-else> {{message.content}}</p>
             <span class="msg_time_send">{{message.time| DAY()}}</span>
           </div>
           <div class="img_cont_msg">
@@ -21,10 +29,22 @@
               class="rounded-circle user_img_msg"
             />
           </div>
-          <div class="msg_cotainer">
-            {{message.content}}
+          <div v-if="message.type=='data:image'" class="msg_cotainer">
+            <img :src="'http://localhost:3000/'+ message.content" style="max-width:160px" alt="">
             <span class="msg_time">{{message.time| DAY()}}</span>
           </div>
+          <div v-else class="msg_cotainer">
+            <a :href="'http://localhost:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
+            <i class="fa fa-file" style="color: black"></i>
+            {{message.content | renameFile()}}
+            </a>
+            <p v-else> {{message.content}}</p>
+            <span class="msg_time">{{message.time| DAY()}}</span>
+          </div>
+          <!-- <div class="msg_cotainer">
+            {{message.content}}
+            <span class="msg_time">{{message.time| DAY()}}</span>
+          </div> -->
         </div>
       </div>
       <div v-show="typing">
@@ -38,8 +58,9 @@
 
     <div class="card-footer">
       <div class="input-group">
-        <div class="input-group-append">
+        <div class="input-group-append" id="chooseFile">
           <span class="input-group-text attach_btn">
+            <input v-on:change="fileChange" type="file" id="selectFile" style="display:none" />
             <i class="fa fa-paperclip"></i>
           </span>
         </div>
@@ -51,11 +72,28 @@
           @keyup.enter="send"
           v-model="content"
         ></textarea>
-        <div class="input-group-append" v-on:click="send">
+        <div  @click="send" class="input-group-append">
           <span class="input-group-text send_btn">
             <i class="fa fa-paper-plane"></i>
           </span>
         </div>
+      </div>
+      <div
+        v-if="fileSend"
+        class="preview"
+        style="position:absolute;z-index:56; bottom:60px; background: #fff; width:100%;padding:15px 5px 15px 5px "
+      >
+        <div
+          @click="fileSend=null"
+          id="removeFile"
+          style="color:red; position: absolute; right: 5px; padding:3px;top:0"
+        >
+          <i class="fa fa-times"></i>
+        </div>
+        <b>
+          <i class="fa fa-file"></i>
+          {{fileSend.name}}
+        </b>
       </div>
     </div>
   </div>
@@ -78,26 +116,40 @@ export default {
       numberOfMess: Number,
       content: "",
       username: localStorage.username,
-      typing: false
+      typing: false,
+      fileSend: null
     };
   },
-
+  mounted() {
+    document.getElementById("chooseFile").addEventListener("click", () => {
+      document.getElementById("selectFile").click();
+    });
+  },
   created() {
     this.loadData();
     this.socket.on("loadMess", ibMess => {
       this.typing = false;
       this.listMess = ibMess;
+      this.$nextTick(function(){
+        var messageBox = document.getElementById("message");
+        messageBox.scrollTop = messageBox.scrollHeight;
+      });
+    });
+    this.socket.on("ib_mess", ibMess => {
+      console.log('new mess');
+         this.listMess.push(ibMess);
       this.$nextTick(function() {
         var messageBox = document.getElementById("message");
         messageBox.scrollTop = messageBox.scrollHeight;
       });
-	});
-	  this.socket.on("ib_mess", ibMess => {
-	  this.listMess.push(ibMess);
-	  })
+   
+    });
   },
   filters: {
-    /** Viết hoa chữ đầu tiên */
+    renameFile: function(data)
+    {
+        return data.slice(data.lastIndexOf('/')+1, data.length)
+    },
     DAY: function(time) {
       var d = new Date();
       var reTime = new Date(time);
@@ -112,20 +164,45 @@ export default {
     }
   },
   methods: {
+    fileChange(event) {
+      var input = event.target.files;
+      const reader = new FileReader();
+      reader.readAsDataURL(input[0]);
+      reader.onload = e => {
+        // console.log(event.target.files[0].name);
+        this.fileSend = {
+          name: event.target.files[0].name,
+          content: e.target.result
+        };
+
+        // console.log(this.fileSend.content);
+      };
+    },
     loadData() {
       this.socket.emit("loadMess", this.roomId);
     },
     send() {
       var d = new Date();
       var utc = d.getTime();
-      if (this.content.trim() != "") {
-        this.socket.emit("send_mess", this.roomId, {
+     
+      if (this.content.trim() != "" || this.fileSend) {
+         if (this.fileSend) {
+          this.socket.emit("send_mess", this.roomId, this.fileSend.content, {
           type: "text",
-          content: this.content,
+          content: this.content.trim(),
           sender: this.username,
           time: utc
-        });
-        this.content = "";
+        } );
+      }
+      else
+        this.socket.emit("send_mess", this.roomId, null, {
+          type: "text",
+          content: this.content.trim(),
+          sender: this.username,
+          time: utc
+        } );
+      
+        this.content = ""; this.fileSend=null;
       }
     },
     areTyping(event) {
@@ -138,43 +215,23 @@ export default {
       // 				socket.emit("typing",self.username, self.selectMessID, false)
       // 			}, 3000);
       // 	   }
-    },
-    // },
-    mounted: function() {
-      var self = this;
-      // socket.on('res_connect', function(data){
-      // 	self.friends = data.friends;
-      // 	localStorage.user = JSON.stringify(data);
-      // 	if(self.friends.length	!= 0){
-      // 		self.getMess(self.friends[0]);
-      // 	}
-      // })
-      // socket.on('res_select', function(value){
-      // self.listMess= value.message;
-      // self.$nextTick(function(){
-      // 			var messageBox =  document.getElementById('message');
-      // 			messageBox.scrollTop = messageBox.scrollHeight
-      // 		})
-
-      // });
-      // socket.on('typing', function(who, status){
-      // if(who != self.username && status == true)
-      // 			{
-      // 			self.typing = true;
-      // 					self.$nextTick(function(){
-      // 			var messageBox =  document.getElementById('message');
-      // 			messageBox.scrollTop = messageBox.scrollHeight
-      // 		})
-
-      //		}
-      // if(status == false)
-      // 			self.typing = false;
-      // 	})
     }
+    // },
   }
 };
 </script>
 <style  scoped>
+p{
+  margin: 0;
+}
+#removeFile:hover {
+  cursor: pointer;
+  border: 1px solid;
+}
+
+.card-body {
+  overflow-y: scroll;
+}
 .type_msg {
   border: 0;
 }

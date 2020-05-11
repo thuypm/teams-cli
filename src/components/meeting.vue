@@ -48,7 +48,6 @@ var socket = io.connect('http://localhost:3000');
 </script>
 <style>
 .col-2custom{
-	
 }
 .card{
     /* height: 700px; */

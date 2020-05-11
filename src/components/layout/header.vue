@@ -1,74 +1,118 @@
 <template>
-     <div class="nav-side-menu ">
-    <div class="brand" >TEAMS</div>
+  <div class="nav-side-menu">
+    <div class="brand">TEAMS</div>
 
-        <div class="menu-list">
-  
-            <ul id="menu-content" class="menu-content collapse out">
-                <li class="">
-                  <a href="/chat">
-                      <div >
-                         <i class="fa fa-envelope fa-lg"></i>  
-                      </div>
-                 <span> Hộp thư  </span>
-                  </a>
-                </li>
-                      <li class="active">
-                  <a href="/allGroup">
-                      <div>
-                         <i class="fa fa-users fa-lg"></i>  
-                      </div>
-                 <span> Nhóm 
-                   
-                    </span>
-                  </a>
-                </li>
-                  
-                      <li class="">
-                  <a href="/files">
-                      <div>
-                         <i class="fa fa-file fa-lg"></i>  
-                      </div>
-                 <span> File  </span>
-                  </a>
-                </li>
-            </ul>
-        
-     </div>
- 	<div class="menu-footer">
-					<ul>
-           
-							<img :src="'http://localhost:3000/user/'+username+'.jpg'" class="rounded-circle user_img_msg">
-            <li class="" @click="signout()">
-                  <a href="#">
-                      <div>
-                         <i class="fa fa-sign-out-alt fa-lg"></i> 
-                      </div>
-                 <span> Đăng xuất  </span>
-                  </a>
-                </li>
-          </ul>
-						</div>
-     </div>
+    <div class="menu-list">
+      <ul id="menu-content" class="menu-content collapse out">
+        <li  :class="{'active': uri== '/chat'}">
+          <a href="/chat">
+            <div>
+              <i class="fa fa-envelope fa-lg"></i>
+            </div>
+            <span>Hộp thư</span>
+          </a>
+        </li>
+        <li :class="{'active': uri== '/allGroup'}">
+          <a href="/allGroup">
+            <div>
+              <i class="fa fa-users fa-lg"></i>
+            </div>
+            <span>Nhóm</span>
+          </a>
+        </li>
+
+        <li  :class="{'active': uri== '/file'}">
+          <a href="/file">
+            <div>
+              <i class="fa fa-file fa-lg"></i>
+            </div>
+            <span>File</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="menu-footer">
+      <ul>
+        <input  v-on:change="imgChange" type="file" id="selectAvatar" style="display:none" accept="image/*" />
+        <img
+          :src="'http://localhost:3000/user/'+username+'.jpg'"
+          class="rounded-circle user_img_msg"
+        />
+        <div id="setAvatar">
+          <i class="fa fa-camera"></i>
+        </div>
+
+        <li class @click="signout()">
+          <a href="#">
+            <div>
+              <i class="fa fa-sign-out-alt fa-lg"></i>
+            </div>
+            <span>Đăng xuất</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 <script>
+import axios from "axios";
 export default {
-  data()
-  {
+  data() {
     return {
+      uri: window.location.pathname,
       username: localStorage.username,
-    }
+      userAvatar: null,
+        axiosConfig: {
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8",
+          token: localStorage.token
+        }
+      },
+    };
   },
-  methods:{
-    signout(){
+  mounted(){
+    // console.log(this.uri);
+document.getElementById("setAvatar").addEventListener('click', ()=>{
+  document.getElementById('selectAvatar').click();
+})
+  },
+  methods: {
+     imgChange(event) { //chọn ảnh tải lên
+	  var input = event.target.files[0];
+           var formData = new FormData();
+        formData.append('avatar',  input);
+        formData.append('username', this.username);
+        axios.post("http://localhost:3000/user/avatar", formData, this.axiosConfig).then((res)=>{
+          console.log(res);
+        })
+
+    },
+    signout() {
       localStorage.clear();
-     window.location.href = '/';
+      window.location.href = "/";
     }
   }
-}
+};
 </script>
 <style  scoped>
- .nav-side-menu {
+#setAvatar {
+  position: absolute;
+  background-color: black;
+  color: white;
+  /* padding-top: 7px; */
+  bottom: 69px;
+  border-radius: 0 0 30px 30px;
+  right: 6px;
+  opacity: 0;
+  width: 65px;
+  height: 40px;
+  -webkit-transition: opacity 1s; /* Safari */
+  transition: opacity 1s;
+}
+#setAvatar:hover {
+  opacity: 1;
+}
+.nav-side-menu {
   width: 77px;
   overflow: auto;
   font-size: 12px;
@@ -79,8 +123,10 @@ export default {
   height: 100vh;
   color: #e1ffff;
 }
-.user_img_msg{
-  max-width: 70px;
+.user_img_msg {
+  object-fit: cover;
+width: 65px;
+height: 65px;
 }
 .nav-side-menu .brand {
   background-color: #23282e;
@@ -167,7 +213,6 @@ export default {
   color: #e1ffff;
 }
 .nav-side-menu li a i {
- 
 }
 .nav-side-menu li:hover {
   border-left: 3px solid #d19b3d;
@@ -192,18 +237,17 @@ export default {
     line-height: 50px !important;
   }
 }
-.menu-list{
+.menu-list {
   /* height:79vh; */
 }
-.menu-footer{
+.menu-footer {
   /* height:12vh */
   /* top:700px !important; */
-  padding-top:  calc(100vh - 400px);
+  padding-top: calc(100vh - 395px);
 }
 @media (min-width: 767px) {
   .nav-side-menu .menu-list .menu-content {
     display: block;
   }
 }
-
 </style>

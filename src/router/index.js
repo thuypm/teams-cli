@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import index from '@/components/index'
+import chat from '@/components/chat'
 import signin from '@/components/signin'
 import allGroup from '@/components/allGroup'
 import signup from '@/components/signup'
+import file from '@/components/file'
 import meeting from '@/components/meeting'
 Vue.use(Router)
 
@@ -16,9 +17,9 @@ const router = new Router({
       component: allGroup
     },
     {
-      path: '/index',
-      name: 'index',
-      component: index
+      path: '/chat',
+      name: 'chat',
+      component: chat
     },
     {
       path: '/signin',
@@ -34,6 +35,11 @@ const router = new Router({
       path: '/signup',
       name: 'signup',
       component: signup
+    },
+    {
+      path: '/file',
+      name: 'file',
+      component: file
     },
     {
       path: '/meeting/:id',
