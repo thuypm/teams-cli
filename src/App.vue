@@ -13,7 +13,8 @@ export default {
 </script>
 
 <style>
-@import "assets/bootstrap.min.css";
+/* @import "assets/bootstrap.min.css"; */
+@import 'bootstrap/dist/css/bootstrap.min.css';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

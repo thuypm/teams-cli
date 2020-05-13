@@ -7,7 +7,7 @@
 						 <li v-for="(usr, index) in members" :key="index" v-bind:id="usr.username">
 							<div class="d-flex bd-highlight">
 								<div class="img_cont " >
-									<img v-bind:src="'http://localhost:3000/user/'+usr+'.jpg'" class="rounded-circle user_img">
+									<img v-bind:src="'http://thuypm.tk:3000/user/'+usr+'.jpg'" class="rounded-circle user_img">
 									<span class="online_icon"></span>
 									
 								</div>
@@ -56,7 +56,7 @@ export default {
 
 	methods: {
 		loadData(){
-			axios.post("http://localhost:3000/room/getRoom", {roomId: this.roomId}, this.axiosConfig).then((res)=>{
+			axios.post("http://thuypm.tk:3000/room/getRoom", {roomId: this.roomId}, this.axiosConfig).then((res)=>{
 				// console.log(res.data);
 				this.members = res.data.members;
 			})

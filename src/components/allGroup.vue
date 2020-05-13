@@ -46,7 +46,7 @@
           <div>
             <img
               class="card-img-top"
-              :src="'http://localhost:3000/room/'+group._id+'/'+group._id+'.jpg'"
+              :src="'http://thuypm.tk:3000/room/'+group._id+'/'+group._id+'.jpg'"
               alt="Card image cap"
             />
             <!-- <div class="upImg" @click="upImg(group, index)">
@@ -127,7 +127,7 @@ export default {
         return;
       }
       axios
-        .post("http://localhost:3000/room/editRoom", upLen, this.axiosConfig)
+        .post("http://thuypm.tk:3000/room/editRoom", upLen, this.axiosConfig)
         .then(res => {
           if (!res.data) {
             this.Notice("Không tìm thấy nhóm này");
@@ -147,7 +147,7 @@ export default {
     loadData() {
       axios
         .post(
-          "http://localhost:3000/user/getAllMeeting",
+          "http://thuypm.tk:3000/user/getAllMeeting",
           { username: this.username },
           this.axiosConfig
         )
@@ -181,9 +181,7 @@ export default {
 .card {
   margin: 2%;
 }
-.card-body {
-  /* padding: 1.25rem 0 0 0 */
-}
+
 .d-flex {
   width: 100%;
 }

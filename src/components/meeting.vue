@@ -23,7 +23,7 @@ import chat from './meeting/chat';
 import listUser from './meeting/listUser';	
 var io = require('socket.io-client')
 // import io from 'socket.io-client';
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect('http://thuypm.tk:3000');
   export default {
 	
          name: 'index',
@@ -49,16 +49,7 @@ var socket = io.connect('http://localhost:3000');
 <style>
 .col-2custom{
 }
-.card{
-    /* height: 700px; */
-	height: 100vh;
-    /* border-radius: 15px !important; */
-    background-color: #F3F4F4 !important;
-}
-.card-body{
-	padding:0.25rem;
 	
-}	
 .screen{
 	  	  display: flex;
   justify-content: center;

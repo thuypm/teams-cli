@@ -12,7 +12,7 @@
         <button v-on:click="setVideo(camera, !micro)" type="button" class="btn mn btn-outline-dark">
           <i :class="{'fa-microphone': micro, 'fa-microphone-slash': !micro}" class="fa fa-lg"></i>
         </button>
-        <button @click="shareScreen" type="button" class="btn mn btn-outline-dark">
+        <button @click="shareScreen" type="button" class="btn mn btn-outline-dark" >
           <i class="fas fa-desktop fa-lg"></i>
         </button>
         <button
@@ -40,7 +40,7 @@
     <div class="row flex-row">
       <div class="you vid">
         <div v-if="!camera">
-          <img :src="'http://localhost:3000/user/'+username+'.jpg'" class="usr_img rounded-circle" />
+          <img :src="'http://thuypm.tk:3000/user/'+username+'.jpg'" class="usr_img rounded-circle" />
           <p style="padding-top: 15px; margin:0">{{username}}</p>
         </div>
 
@@ -52,7 +52,7 @@
       <div v-for="(usr) in listFriend" :key="usr.Id" class="vid">
         <div>
           <img
-            :src="'http://localhost:3000/user/'+usr.username+'.jpg'"
+            :src="'http://thuypm.tk:3000/user/'+usr.username+'.jpg'"
             class="usr_img rounded-circle"
           />
           <p style="padding-top: 15px; margin:0">{{usr.username}}</p>
@@ -85,17 +85,17 @@ export default {
   },
   created() {
     // this.socket.emit('newUser', this.roomId, this.username);
-    this.screen = "http://localhost:3000/user/" + this.username + ".jpg";
+    this.screen = "http://thuypm.tk:3000/user/" + this.username + ".jpg";
     this.socket.on("screen", (Id, video) => {
       if (Id != this.socket.id) this.screen = video;
     });
     this.socket.on("stopScreen", Id => {
       // console.log("stop");
       if (Id != this.socket.id)
-        this.screen = "http://localhost:3000/user/" + this.username + ".jpg";
+        this.screen = "http://thuypm.tk:3000/user/" + this.username + ".jpg";
     });
     this.socket.on("exitUser", Id => {
-      this.screen="http://localhost:3000/user/" + this.username + ".jpg";
+      this.screen="http://thuypm.tk:3000/user/" + this.username + ".jpg";
       var vt1 = this.listCli.findIndex(e => e.Id == Id);
       this.listCli.splice(vt1, 1);
       var vt2 = this.listFriend.findIndex(e => e.Id == Id);

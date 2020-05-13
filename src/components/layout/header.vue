@@ -35,7 +35,7 @@
       <ul>
         <input  v-on:change="imgChange" type="file" id="selectAvatar" style="display:none" accept="image/*" />
         <img
-          :src="'http://localhost:3000/user/'+username+'.jpg'"
+          :src="'http://thuypm.tk:3000/user/'+username+'.jpg'"
           class="rounded-circle user_img_msg"
         />
         <div id="setAvatar">
@@ -82,7 +82,7 @@ document.getElementById("setAvatar").addEventListener('click', ()=>{
            var formData = new FormData();
         formData.append('avatar',  input);
         formData.append('username', this.username);
-        axios.post("http://localhost:3000/user/avatar", formData, this.axiosConfig).then((res)=>{
+        axios.post("http://thuypm.tk:3000/user/avatar", formData, this.axiosConfig).then((res)=>{
           console.log(res);
         })
 

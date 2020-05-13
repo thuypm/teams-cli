@@ -80,7 +80,7 @@ export default {
             
                this.listUserSearch = [];
                       if((this.userSearch.trim()))
-                      axios.post("http://localhost:3000/user/search", {username: this.userSearch}, this.axiosConfig).then((res)=>{
+                      axios.post("http://thuypm.tk:3000/user/search", {username: this.userSearch}, this.axiosConfig).then((res)=>{
                         var arr=[];
                         for(var i in res.data)
                           {
@@ -125,7 +125,7 @@ export default {
                      action: 0                   }
                  
                   } 
-                      axios.post("http://localhost:3000/room/editRoom",upLen, this.axiosConfig).then(res=>{
+                      axios.post("http://thuypm.tk:3000/room/editRoom",upLen, this.axiosConfig).then(res=>{
                         if(res.data)
                           {
                             this.$emit('editGroup', res.data);

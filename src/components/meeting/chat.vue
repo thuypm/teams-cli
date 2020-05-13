@@ -4,11 +4,11 @@
       <div v-for="(message, index) in listMess" :key="index">
         <div class="d-flex justify-content-end mb-4" v-if="message.sender == username">
           <div v-if="message.type=='data:image'" class="msg_cotainer_send">
-            <img :src="'http://localhost:3000/'+ message.content" style="max-width:160px" alt="">
+            <img :src="'http://thuypm.tk:3000/'+ message.content" style="max-width:160px" alt="">
             <span class="msg_time_send">{{message.time| DAY()}}</span>
           </div>
           <div v-else class="msg_cotainer_send">
-            <a :href="'http://localhost:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
+            <a :href="'http://thuypm.tk:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
             <i class="fa fa-file" style="color: white"></i>
             {{message.content | renameFile()}}
             </a>
@@ -17,7 +17,7 @@
           </div>
           <div class="img_cont_msg">
             <img
-              v-bind:src="'http://localhost:3000/user/' + message.sender +'.jpg'"
+              v-bind:src="'http://thuypm.tk:3000/user/' + message.sender +'.jpg'"
               class="rounded-circle user_img_msg"
             />
           </div>
@@ -25,16 +25,16 @@
         <div class="d-flex justify-content-start mb-4" v-else>
           <div class="t_mimg_consg">
             <img
-              v-bind:src="'http://localhost:3000/user/' + message.sender +'.jpg'"
+              v-bind:src="'http://thuypm.tk:3000/user/' + message.sender +'.jpg'"
               class="rounded-circle user_img_msg"
             />
           </div>
           <div v-if="message.type=='data:image'" class="msg_cotainer">
-            <img :src="'http://localhost:3000/'+ message.content" style="max-width:160px" alt="">
+            <img :src="'http://thuypm.tk:3000/'+ message.content" style="max-width:160px" alt="">
             <span class="msg_time">{{message.time| DAY()}}</span>
           </div>
           <div v-else class="msg_cotainer">
-            <a :href="'http://localhost:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
+            <a :href="'http://thuypm.tk:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
             <i class="fa fa-file" style="color: black"></i>
             {{message.content | renameFile()}}
             </a>
@@ -101,7 +101,7 @@
 <script>
 import axios from "axios";
 // import io from 'socket.io-client';
-// var socket = io.connect('http://localhost:3000');
+// var socket = io.connect('http://thuypm.tk:3000');
 var timeout;
 export default {
   props: ["roomId", "socket"],
@@ -221,6 +221,16 @@ export default {
 };
 </script>
 <style  scoped>
+.card{
+    /* height: 700px; */
+	height: 100vh;
+    /* border-radius: 15px !important; */
+    background-color: #F3F4F4;
+}
+.card-body{
+	padding:0.25rem;
+	
+}
 p{
   margin: 0;
 }
