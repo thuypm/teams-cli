@@ -7,9 +7,10 @@
     <editGroup
       v-show="showModal"
       @editGroup="editGroup"
-      @close="showModal=false"
+      @close="showModal=false;"
       :groupJoin="groupJoin"
     />
+    <confirm v-if="groupDel" @close="groupDel=null" @comfimDel="confirmDel()" :option="delOption" :group="groupDel" />
     <div v-if="showNotice" class="notice">
       <h3 style="padding-top: 20px">{{showNotice}}</h3>
     </div>
@@ -38,7 +39,11 @@
 
       <div class="d-flex justify-content-around" style="flex-wrap:wrap">
         <div class="card" style="width: 18rem;" v-for="(group, index) in groups" :key="index">
-          <div v-if="group.owner == username" @click="deleteGroup(group, index)" style="position: absolute; right:0;">
+          <div
+            v-if="group.owner == username"
+            @click="groupDel=group; delOption = 2; indexDel=index"
+            style="position: absolute; right:0;"
+          >
             <button class="btn btn-outline-danger">
               <i class="fa fa-trash"></i>
             </button>
@@ -66,7 +71,7 @@
             <a :href="'/meeting/'+group._id" class="btn btn-outline-dark">
               <b>Họp</b>
             </a>
-            <button @click="leaveGroup(group, index)" class="btn btn-outline-danger">
+            <button @click="groupDel=group; delOption = 1;indexDel=index" class="btn btn-outline-danger">
               <i class="fa fa-times"></i>
             </button>
           </div>
@@ -79,10 +84,12 @@
 import header from "./layout/header.vue";
 import editGroup from "./groupModal/editGroup";
 import axios from "axios";
+import confirmModal from "./groupModal/confirmModal";
 export default {
   components: {
     Header: header,
-    editGroup: editGroup
+    editGroup: editGroup,
+    confirm: confirmModal
   },
   data() {
     return {
@@ -94,6 +101,9 @@ export default {
         }
       },
       username: localStorage.username,
+      delOption: 1,
+      groupDel: null,
+      indexDel: -1,
       showModal: false,
       groupCode: "",
       groupJoin: Object,
@@ -105,10 +115,29 @@ export default {
     this.loadData();
   },
   methods: {
-    deleteGroup(group, vt)
-    {
-      
-    },
+ confirmDel(){
+   var upLen = {
+     action:  this.delOption +1,
+     roomId: this.groupDel._id,
+     username: this.username,
+     members: [this.username]
+   }
+  // upLen.action = this.delOption +1;
+         axios
+        .post("http://thuypm.tk:3000/room/editRoom", upLen, this.axiosConfig)
+        .then(res => {
+          if (!res.data) {
+            this.Notice("Có lỗi xảy ra, vui lòng thử lại sau");
+          } else {
+            if(this.delOption == 1)
+            this.Notice("Đã rời nhóm " + this.groupDel.name);
+            else
+            this.Notice("Đã xóa nhóm "+ this.groupDel.name);
+            this.groupDel = null;
+            this.groups.splice(this.indexDel, 1);
+          }
+        });
+ },
     Notice(notice) {
       this.showNotice = notice;
       setTimeout(() => {
@@ -152,7 +181,6 @@ export default {
           this.axiosConfig
         )
         .then(res => {
-  
           this.groups = res.data.content;
         });
     }
@@ -165,19 +193,7 @@ export default {
   opacity: 1;
 }
 
-.notice {
-  position: fixed;
-  color: white;
-  z-index: 999;
-  top: 0;
-  left: 0;
-  margin: 0% 40% 40% 40%;
-  width: 20%;
-  height: 10%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-}
+
 .card {
   margin: 2%;
 }

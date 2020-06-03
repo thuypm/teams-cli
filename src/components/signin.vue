@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" style=" height: 100vh;">
     <div class="col">
       <div class="card card-container">
         <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
@@ -45,7 +45,7 @@
           >Sign in</button>
         </form>
         <!-- /form -->
-        <a href class="forgot-password">Forgot the password?</a>
+        <!-- <a href class="forgot-password">Forgot the password?</a> -->
         <button
           class="btn btn-lg btn-success btn-block btn-signup"
           type="button"
@@ -110,13 +110,15 @@ export default {
 <style scoped>
 body,
 html {
-  height: 100%;
+ 
   margin: 0;
   background: #7f7fd5;
   background: -webkit-linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
   background: linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
 }
-
+.row{
+  background: #f7f7f7;
+}
 .card-container.card {
   padding: 40px 40px;
 }
@@ -134,7 +136,7 @@ html {
  * Card component
  */
 .card {
-  background-color: #f7f7f7;
+  background-color: #fff;
   /* just in case there no content*/
   padding: 20px 25px 30px;
   margin: 0 auto 25px;
@@ -255,7 +257,7 @@ html {
 .btn.btn-signup:hover,
 .btn.btn-signup:active,
 .btn.btn-signup:focus {
-  background-color: red;
+  background-color: #343a40;
 }
 
 .forgot-password {

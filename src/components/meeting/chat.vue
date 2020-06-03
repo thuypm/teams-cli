@@ -4,15 +4,21 @@
       <div v-for="(message, index) in listMess" :key="index">
         <div class="d-flex justify-content-end mb-4" v-if="message.sender == username">
           <div v-if="message.type=='data:image'" class="msg_cotainer_send">
-            <img :src="'http://thuypm.tk:3000/'+ message.content" style="max-width:160px" alt="">
+           <a :href="'http://thuypm.tk:3000/'+ message.content" target="_blank">
+            <img :src="'http://thuypm.tk:3000/'+ message.content" style="max-width:160px" alt />
+           </a>
             <span class="msg_time_send">{{message.time| DAY()}}</span>
           </div>
           <div v-else class="msg_cotainer_send">
-            <a :href="'http://thuypm.tk:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
-            <i class="fa fa-file" style="color: white"></i>
-            {{message.content | renameFile()}}
+            <a
+              :href="'http://thuypm.tk:3000/'+ message.content"
+              v-if="message.type!='text'"
+              target="_blank"
+            >
+              <i class="fa fa-file" style="color: white"></i>
+              {{message.content | renameFile()}}
             </a>
-            <p v-else> {{message.content}}</p>
+            <p v-else>{{message.content}}</p>
             <span class="msg_time_send">{{message.time| DAY()}}</span>
           </div>
           <div class="img_cont_msg">
@@ -30,21 +36,27 @@
             />
           </div>
           <div v-if="message.type=='data:image'" class="msg_cotainer">
-            <img :src="'http://thuypm.tk:3000/'+ message.content" style="max-width:160px" alt="">
+            <a :href="'http://thuypm.tk:3000/'+ message.content" target="_blank">
+            <img :src="'http://thuypm.tk:3000/'+ message.content" style="max-width:160px" alt />
+            </a>
             <span class="msg_time">{{message.time| DAY()}}</span>
           </div>
           <div v-else class="msg_cotainer">
-            <a :href="'http://thuypm.tk:3000/'+ message.content" v-if="message.type!='text'" target="_blank">
-            <i class="fa fa-file" style="color: black"></i>
-            {{message.content | renameFile()}}
+            <a
+              :href="'http://thuypm.tk:3000/'+ message.content"
+              v-if="message.type!='text'"
+              target="_blank"
+            >
+              <i class="fa fa-file" style="color: black"></i>
+              {{message.content | renameFile()}}
             </a>
-            <p v-else> {{message.content}}</p>
+            <p v-else>{{message.content}}</p>
             <span class="msg_time">{{message.time| DAY()}}</span>
           </div>
           <!-- <div class="msg_cotainer">
             {{message.content}}
             <span class="msg_time">{{message.time| DAY()}}</span>
-          </div> -->
+          </div>-->
         </div>
       </div>
       <div v-show="typing">
@@ -72,7 +84,7 @@
           @keyup.enter="send"
           v-model="content"
         ></textarea>
-        <div  @click="send" class="input-group-append">
+        <div @click="send" class="input-group-append">
           <span class="input-group-text send_btn">
             <i class="fa fa-paper-plane"></i>
           </span>
@@ -117,38 +129,61 @@ export default {
       content: "",
       username: localStorage.username,
       typing: false,
-      fileSend: null
+      fileSend: null,
+      page: 0
     };
   },
   mounted() {
     document.getElementById("chooseFile").addEventListener("click", () => {
       document.getElementById("selectFile").click();
     });
+    var messageBox = document.getElementById("message");
+    messageBox.onscroll = e => {
+      // console.log(messageBox.scrollHeight );
+      if (messageBox.scrollTop == 0) {
+        this.page++;
+        this.socket.emit("loadMess", this.roomId, this.page);
+      }
+    };
   },
   created() {
     this.loadData();
+
+    this.socket.on("room-not-found", () => {
+      alert("có lỗi xảy ra hoặc phòng không còn tồn tại");
+      window.location.href = "/";
+    });
     this.socket.on("loadMess", ibMess => {
       this.typing = false;
-      this.listMess = ibMess;
-      this.$nextTick(function(){
-        var messageBox = document.getElementById("message");
-        messageBox.scrollTop = messageBox.scrollHeight;
-      });
+      var messageBox = document.getElementById("message");
+      var tmp = messageBox.scrollHeight;
+      if(ibMess.length)
+      {
+            this.listMess = ibMess.concat(this.listMess);
+      if (this.page == 0)
+        this.$nextTick(function() {
+          messageBox.scrollTop = messageBox.scrollHeight;
+        });
+      else
+        this.$nextTick(function() {
+          messageBox.scrollTop = messageBox.scrollHeight - tmp;
+        });
+      }
+  
     });
+
     this.socket.on("ib_mess", ibMess => {
-      console.log('new mess');
-         this.listMess.push(ibMess);
+      // console.log('new mess');
+      this.listMess.push(ibMess);
       this.$nextTick(function() {
         var messageBox = document.getElementById("message");
         messageBox.scrollTop = messageBox.scrollHeight;
       });
-   
     });
   },
   filters: {
-    renameFile: function(data)
-    {
-        return data.slice(data.lastIndexOf('/')+1, data.length)
+    renameFile: function(data) {
+      return data.slice(data.lastIndexOf("/") + 1, data.length);
     },
     DAY: function(time) {
       var d = new Date();
@@ -179,30 +214,30 @@ export default {
       };
     },
     loadData() {
-      this.socket.emit("loadMess", this.roomId);
+      this.socket.emit("loadMess", this.roomId, 0);
     },
     send() {
       var d = new Date();
       var utc = d.getTime();
-     
+
       if (this.content.trim() != "" || this.fileSend) {
-         if (this.fileSend) {
+        if (this.fileSend) {
           this.socket.emit("send_mess", this.roomId, this.fileSend.content, {
-          type: "text",
-          content: this.content.trim(),
-          sender: this.username,
-          time: utc
-        } );
-      }
-      else
-        this.socket.emit("send_mess", this.roomId, null, {
-          type: "text",
-          content: this.content.trim(),
-          sender: this.username,
-          time: utc
-        } );
-      
-        this.content = ""; this.fileSend=null;
+            type: "text",
+            content: this.content.trim(),
+            sender: this.username,
+            time: utc
+          });
+        } else
+          this.socket.emit("send_mess", this.roomId, null, {
+            type: "text",
+            content: this.content.trim(),
+            sender: this.username,
+            time: utc
+          });
+
+        this.content = "";
+        this.fileSend = null;
       }
     },
     areTyping(event) {
@@ -221,17 +256,16 @@ export default {
 };
 </script>
 <style  scoped>
-.card{
-    /* height: 700px; */
-	height: 100vh;
-    /* border-radius: 15px !important; */
-    background-color: #F3F4F4;
+.card {
+  /* height: 700px; */
+  height: 100vh;
+  /* border-radius: 15px !important; */
+  background-color: #f3f4f4;
 }
-.card-body{
-	padding:0.25rem;
-	
+.card-body {
+  padding: 0.25rem;
 }
-p{
+p {
   margin: 0;
 }
 #removeFile:hover {
@@ -260,6 +294,7 @@ p{
   background-color: #435f7a;
 }
 .user_img_msg {
+  object-fit: cover;
   height: 40px;
   width: 40px;
   border: 1.5px solid #f5f6fa;

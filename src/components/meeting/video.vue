@@ -12,7 +12,7 @@
         <button v-on:click="setVideo(camera, !micro)" type="button" class="btn mn btn-outline-dark">
           <i :class="{'fa-microphone': micro, 'fa-microphone-slash': !micro}" class="fa fa-lg"></i>
         </button>
-        <button @click="shareScreen" type="button" class="btn mn btn-outline-dark" >
+        <button @click="shareScreen" :disabled="!canShareScreen" type="button" class="btn mn btn-outline-dark" >
           <i class="fas fa-desktop fa-lg"></i>
         </button>
         <button
@@ -80,19 +80,24 @@ export default {
       listOpt: 0,
       videoUser: "",
       listVideo: [],
-      screen: ""
+      screen: "",
+      canShareScreen: true,
     };
   },
   created() {
     // this.socket.emit('newUser', this.roomId, this.username);
     this.screen = "http://thuypm.tk:3000/user/" + this.username + ".jpg";
     this.socket.on("screen", (Id, video) => {
-      if (Id != this.socket.id) this.screen = video;
+      if (Id != this.socket.id) {
+        this.screen = video;
+        };
+        this.canShareScreen = false;
     });
     this.socket.on("stopScreen", Id => {
       // console.log("stop");
       if (Id != this.socket.id)
         this.screen = "http://thuypm.tk:3000/user/" + this.username + ".jpg";
+          this.canShareScreen = true;
     });
     this.socket.on("exitUser", Id => {
       this.screen="http://thuypm.tk:3000/user/" + this.username + ".jpg";
@@ -275,8 +280,17 @@ export default {
 .btn-outline-secondary:hover{
 	background: #2e353d;;
 } */
-.card-body {
+.screen{
+	  	  display: flex;
+  justify-content: center;
+  /* height: 200px; */
+  /* height:100% */
+ /* height: calc(100% - 300px);*/
+  height:calc(100vh - 155px);
+ height: -moz-calc(100vh - 155px);
+ height: -webkit-calc(100vh - 155px); 
 }
+
 .usr_img {
   margin-top: 10px;
   height:70px;

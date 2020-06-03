@@ -35,7 +35,7 @@
       <ul>
         <input  v-on:change="imgChange" type="file" id="selectAvatar" style="display:none" accept="image/*" />
         <img
-          :src="'http://thuypm.tk:3000/user/'+username+'.jpg'"
+          :src="avatar"
           class="rounded-circle user_img_msg"
         />
         <div id="setAvatar">
@@ -68,22 +68,33 @@ export default {
           token: localStorage.token
         }
       },
+      avatar: ""
     };
   },
   mounted(){
     // console.log(this.uri);
 document.getElementById("setAvatar").addEventListener('click', ()=>{
   document.getElementById('selectAvatar').click();
+  
 })
   },
+  created()
+{
+  this.avatar = "http://thuypm.tk:3000/user/" + this.username + ".jpg"
+},
   methods: {
      imgChange(event) { //chọn ảnh tải lên
+      const reader = new FileReader();
 	  var input = event.target.files[0];
            var formData = new FormData();
         formData.append('avatar',  input);
         formData.append('username', this.username);
         axios.post("http://thuypm.tk:3000/user/avatar", formData, this.axiosConfig).then((res)=>{
-          console.log(res);
+           reader.readAsDataURL(input);
+           reader.onload = e => {
+             this.avatar= e.target.result;
+           }
+          // console.log(res);
         })
 
     },
@@ -243,7 +254,7 @@ height: 65px;
 .menu-footer {
   /* height:12vh */
   /* top:700px !important; */
-  padding-top: calc(100vh - 395px);
+  padding-top: calc(100vh - 400px);
 }
 @media (min-width: 767px) {
   .nav-side-menu .menu-list .menu-content {
