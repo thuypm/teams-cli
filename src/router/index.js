@@ -6,6 +6,10 @@ import allGroup from '@/components/allGroup'
 import signup from '@/components/signup'
 import file from '@/components/file'
 import meeting from '@/components/meeting'
+import notification from '@/components/notification'
+import exercise from '@/components/exercise'
+import error from '@/components/error'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -42,9 +46,24 @@ const router = new Router({
       component: file
     },
     {
+      path: '/notification',
+      name: 'notification',
+      component: notification
+    },
+    {
+      path: '/exercise',
+      name: 'exercise',
+      component: exercise
+    },
+    {
       path: '/meeting/:id',
       name: 'meeting',
       component: meeting
+    },
+    {
+      path: '*',
+      name: 'error',
+      component: error
     },
   ],
 

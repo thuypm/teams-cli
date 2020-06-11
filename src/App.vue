@@ -1,20 +1,20 @@
 
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
-    <router-view/>
+    <router-view style="z-index:12"/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 
 <style>
 /* @import "assets/bootstrap.min.css"; */
 @import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'fontawesome/css/all.css';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

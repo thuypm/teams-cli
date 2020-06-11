@@ -2,42 +2,102 @@
   <div class="nav-side-menu">
     <div class="brand">TEAMS</div>
 
+    <div class="menu-drop">
+      <div class="menu-list-drop" style="display:none">
+        <ul>
+          <a href="/notification">
+            <li :class="{'active': uri== '/notification'}">
+              <i class="fa fa-bell"></i>
+              <span>Thông báo</span>
+            </li>
+          </a>
+          <a href="/chat">
+            <li :class="{'active': uri== '/chat'}">
+              <i class="fa fa-comments"></i>
+
+              <span>Trò chuyện</span>
+            </li>
+          </a>
+          <a href="/allGroup" style="text-align: left">
+            <li :class="{'active': uri== '/allGroup'  || uri =='/'}">
+              <i class="fa fa-users"></i>
+              <span>&nbsp; Nhóm &nbsp;</span>
+            </li>
+          </a>
+          <a href="/file">
+            <li :class="{'active': uri== '/file'}">
+              <i class="fa fa-file"></i>
+
+              <span>&nbsp; &nbsp; &nbsp; Tệp &nbsp; &nbsp;</span>
+            </li>
+          </a>
+          <a href="/exercise">
+            <li :class="{'active': uri== '/exercise'}">
+              <i class="fa fa-book"></i>
+
+              <span>&nbsp; &nbsp; Bài tập &nbsp;</span>
+            </li>
+          </a>
+        </ul>
+      </div>
+      <div id="drop-menu">
+        <b style="font-size: 30px">...</b>
+      </div>
+    </div>
     <div class="menu-list">
       <ul id="menu-content" class="menu-content collapse out">
-        <li  :class="{'active': uri== '/chat'}">
-          <a href="/chat">
+        <a href="/notification" style="color: #fff">
+          <li :class="{'active': uri== '/notification'}">
             <div>
-              <i class="fa fa-envelope fa-lg"></i>
+              <i class="fa fa-bell fa-lg"></i>
             </div>
-            <span>Hộp thư</span>
-          </a>
-        </li>
-        <li :class="{'active': uri== '/allGroup'}">
-          <a href="/allGroup">
+            <span>Thông báo</span>
+          </li>
+        </a>
+        <a href="/chat" style="color: #fff">
+          <li :class="{'active': uri== '/chat'}">
+            <div>
+              <i class="fa fa-comments fa-lg"></i>
+            </div>
+            <span>Trò chuyện</span>
+          </li>
+        </a>
+        <a href="/allGroup" style="color: #fff">
+          <li :class="{'active': uri== '/allGroup'  || uri =='/'}">
             <div>
               <i class="fa fa-users fa-lg"></i>
             </div>
             <span>Nhóm</span>
-          </a>
-        </li>
-
-        <li  :class="{'active': uri== '/file'}">
-          <a href="/file">
+          </li>
+        </a>
+        <a href="/file" style="color: #fff">
+          <li :class="{'active': uri== '/file'}">
             <div>
               <i class="fa fa-file fa-lg"></i>
             </div>
-            <span>File</span>
-          </a>
-        </li>
+            <span>Tệp</span>
+          </li>
+        </a>
+        <a href="/exercise" style="color: #fff">
+          <li :class="{'active': uri== '/exercise'}">
+            <div>
+              <i class="fa fa-book fa-lg"></i>
+            </div>
+            <span>Bài tập</span>
+          </li>
+        </a>
       </ul>
     </div>
     <div class="menu-footer">
       <ul>
-        <input  v-on:change="imgChange" type="file" id="selectAvatar" style="display:none" accept="image/*" />
-        <img
-          :src="avatar"
-          class="rounded-circle user_img_msg"
+        <input
+          v-on:change="imgChange"
+          type="file"
+          id="selectAvatar"
+          style="display:none"
+          accept="image/*"
         />
+        <img :src="avatar" class="rounded-circle user_img_msg" />
         <div id="setAvatar">
           <i class="fa fa-camera"></i>
         </div>
@@ -62,7 +122,7 @@ export default {
       uri: window.location.pathname,
       username: localStorage.username,
       userAvatar: null,
-        axiosConfig: {
+      axiosConfig: {
         headers: {
           "Content-Type": "application/json;charset=UTF-8",
           token: localStorage.token
@@ -71,32 +131,43 @@ export default {
       avatar: ""
     };
   },
-  mounted(){
+  mounted() {
     // console.log(this.uri);
-document.getElementById("setAvatar").addEventListener('click', ()=>{
-  document.getElementById('selectAvatar').click();
-  
-})
+    document.getElementById("setAvatar").addEventListener("click", () => {
+      document.getElementById("selectAvatar").click();
+    });
+    var hovr = document.getElementsByClassName("menu-drop")[0];
+    hovr.addEventListener("mouseover", () => {
+      document.getElementsByClassName("menu-list-drop")[0].style.display =
+        "block";
+      document.getElementById("drop-menu").style.background = "#4f5b69";
+    });
+    hovr.addEventListener("mouseout", () => {
+      document.getElementsByClassName("menu-list-drop")[0].style.display =
+        "none";
+      document.getElementById("drop-menu").style.background = "none";
+    });
   },
-  created()
-{
-  this.avatar = "http://thuypm.tk:3000/user/" + this.username + ".jpg"
-},
+  created() {
+    this.avatar = "http://thuypm.tk:3000/user/" + this.username + ".jpg";
+  },
   methods: {
-     imgChange(event) { //chọn ảnh tải lên
+    imgChange(event) {
+      //chọn ảnh tải lên
       const reader = new FileReader();
-	  var input = event.target.files[0];
-           var formData = new FormData();
-        formData.append('avatar',  input);
-        formData.append('username', this.username);
-        axios.post("http://thuypm.tk:3000/user/avatar", formData, this.axiosConfig).then((res)=>{
-           reader.readAsDataURL(input);
-           reader.onload = e => {
-             this.avatar= e.target.result;
-           }
+      var input = event.target.files[0];
+      var formData = new FormData();
+      formData.append("avatar", input);
+      formData.append("username", this.username);
+      axios
+        .post("http://thuypm.tk:3000/user/avatar", formData, this.axiosConfig)
+        .then(res => {
+          reader.readAsDataURL(input);
+          reader.onload = e => {
+            this.avatar = e.target.result;
+          };
           // console.log(res);
-        })
-
+        });
     },
     signout() {
       localStorage.clear();
@@ -106,6 +177,19 @@ document.getElementById("setAvatar").addEventListener('click', ()=>{
 };
 </script>
 <style  scoped>
+ul a {
+  text-decoration: none;
+  color: #fff;
+}
+.menu-list-drop ul li {
+  padding: 3px;
+}
+.menu-list-drop {
+  background: #2e353d;
+  z-index: 999;
+  position: fixed;
+  left: 77px;
+}
 #setAvatar {
   position: absolute;
   background-color: black;
@@ -136,8 +220,8 @@ document.getElementById("setAvatar").addEventListener('click', ()=>{
 }
 .user_img_msg {
   object-fit: cover;
-width: 65px;
-height: 65px;
+  width: 65px;
+  height: 65px;
 }
 .nav-side-menu .brand {
   background-color: #23282e;
@@ -156,19 +240,6 @@ height: 65px;
   margin: 0px;
   line-height: 35px;
   cursor: pointer;
-  /*    
-    .collapsed{
-       .arrow:before{
-                 font-family: FontAwesome;
-                 content: "\f053";
-                 display: inline-block;
-                 padding-left:10px;
-                 padding-right: 10px;
-                 vertical-align: middle;
-                 float:right;
-            }
-     }
-*/
 }
 .nav-side-menu ul :not(collapsed) .arrow:before,
 .nav-side-menu li :not(collapsed) .arrow:before {
@@ -180,6 +251,19 @@ height: 65px;
   vertical-align: middle;
   /* float: right; */
 }
+#drop-menu {
+  width: 77px;
+  height: 75px;
+}
+/* .menu-drop #drop-menu:hover{
+  background-color: #4f5b69;
+    -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  transition: all 1s ease;
+  cursor: pointer;
+} */
 .nav-side-menu ul .active,
 .nav-side-menu li .active {
   border-left: 3px solid #d19b3d;
@@ -234,30 +318,46 @@ height: 65px;
   -ms-transition: all 1s ease;
   transition: all 1s ease;
 }
-@media (max-width: 767px) {
-  .nav-side-menu {
-    position: relative;
-    width: 100%;
-    margin-bottom: 10px;
-  }
 
-  .brand {
-    text-align: left !important;
-    font-size: 22px;
-    padding-left: 20px;
-    line-height: 50px !important;
-  }
+.brand {
+  text-align: left !important;
+  font-size: 22px;
+  padding-left: 20px;
+  line-height: 50px !important;
 }
+
 .menu-list {
   /* height:79vh; */
 }
 .menu-footer {
   /* height:12vh */
   /* top:700px !important; */
-  padding-top: calc(100vh - 400px);
+  padding-top: calc(100vh - 540px);
+}
+/* @media (max-width: 767px) {
+  .nav-side-menu {
+    position: relative;
+    margin-bottom: 10px;
+  }
+} */
+.menu-drop {
+  display: none;
 }
 @media (min-width: 767px) {
   .nav-side-menu .menu-list .menu-content {
+    display: block;
+  }
+}
+@media (max-height: 540px) {
+  .menu-list {
+    display: none;
+  }
+  .menu-footer {
+    /* height:12vh */
+    /* top:700px !important; */
+    padding-top: calc(100vh - 270px);
+  }
+  .menu-drop {
     display: block;
   }
 }

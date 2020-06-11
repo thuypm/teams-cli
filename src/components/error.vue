@@ -4,7 +4,7 @@
       <Header />
     </div>
 	<div style="text-align:center; width:100%">
-		<h1 >Hãy chờ chúng tôi có thêm thời gian để phát triển</h1>
+		<h1 >Trang bạn yêu cầu không tồn tại</h1>
 	</div>
 </div>
 </template>

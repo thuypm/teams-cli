@@ -3,8 +3,11 @@
     <div style="padding:3px">
       <input v-model="userSearch" @keyup="findUser()" type="text" class="form-control" placeholder="Tìm ai đó" />
     </div>
-	    <div v-if="showNotice" class="notice">
-      <h3 style="padding-top: 20px">{{showNotice}}</h3>
+	    <div v-if="showNotice" class="notice" style="margin-top: 20px">
+      <div style="background: #2c3e50">
+        <h5 style="padding: 5px;color: #fff"><b>Thông báo</b> </h5>
+      </div >
+      <h4 style="padding: 10px 5px 5px 5px">{{showNotice}}</h4>
     </div>
     <ul class="contacts">
       <li v-for="(usr, index) in membersView" :key="index" v-bind:id="usr.username" style="margin:0 !important;border-bottom: 1px solid black">

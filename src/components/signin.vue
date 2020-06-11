@@ -1,4 +1,4 @@
-<template>
+<template >
   <div class="row" style=" height: 100vh;">
     <div class="col">
       <div class="card card-container">
@@ -32,10 +32,10 @@
           </div>
           <strong>
             <div
-              class="alert alert-danger"
-              style="text-align: center; padding:0; border:0"
-              v-show="error == true"
-            >{{messErr}}</div>
+              class=""
+              style="text-align: center; padding:5px; border:0; color: red"
+              v-show="error == true" 
+            >* {{messErr}} *</div>
           </strong>
 
           <button
@@ -113,11 +113,13 @@ html {
  
   margin: 0;
   background: #7f7fd5;
+      background-repeat: repeat-y;
   background: -webkit-linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
   background: linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
 }
 .row{
   background: #f7f7f7;
+      background-repeat: repeat-y;
 }
 .card-container.card {
   padding: 40px 40px;

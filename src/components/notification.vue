@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-1custom" >
+    <div class="col-1custom">
       <Header />
     </div>
 	<div style="text-align:center; width:100%">

@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-1custom">
+    <div class="col-1custom" style="z-index:999">
       <Header />
     </div>
 
@@ -11,8 +11,11 @@
       :groupJoin="groupJoin"
     />
     <confirm v-if="groupDel" @close="groupDel=null" @comfimDel="confirmDel()" :option="delOption" :group="groupDel" />
-    <div v-if="showNotice" class="notice">
-      <h3 style="padding-top: 20px">{{showNotice}}</h3>
+    <div v-if="showNotice" class="notice" style="margin-top: 20px">
+      <div style="background: #2c3e50">
+        <h5 style="padding: 5px;color: #fff"><b>Thông báo</b> </h5>
+      </div >
+      <h4 style="padding: 10px 5px 5px 5px">{{showNotice}}</h4>
     </div>
     <div class="col-11custom">
       <div class="row">
@@ -48,10 +51,11 @@
               <i class="fa fa-trash"></i>
             </button>
           </div>
-          <div>
+          <div> 
+            <!-- :src="'http://thuypm.tk:3000/room/'+group._id+'/'+group._id+'.jpg'" -->
             <img
               class="card-img-top"
-              :src="'http://thuypm.tk:3000/room/'+group._id+'/'+group._id+'.jpg'"
+             :src="'http://thuypm.tk:3000/room/unknown.jpg'"
               alt="Card image cap"
             />
             <!-- <div class="upImg" @click="upImg(group, index)">
@@ -69,7 +73,7 @@
               <i class="fa fa-plus"></i>
             </button>
             <a :href="'/meeting/'+group._id" class="btn btn-outline-dark">
-              <b>Họp</b>
+              <b>Tham gia</b>
             </a>
             <button @click="groupDel=group; delOption = 1;indexDel=index" class="btn btn-outline-danger">
               <i class="fa fa-times"></i>
@@ -192,6 +196,7 @@ export default {
   cursor: pointer;
   opacity: 1;
 }
+
 
 
 .card {

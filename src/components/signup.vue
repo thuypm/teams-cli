@@ -41,11 +41,10 @@
 
           <strong>
             <div
-              v-show="error == true"
-              class="alert alert-danger"
-              style="text-align: center; padding:0; border:0"
-              id="error2"
-            >{{messErr}}</div>
+              class=""
+              style="text-align: center; padding:5px; border:0; color: red"
+              v-show="error == true" 
+            >* {{messErr}} *</div>
           </strong>
 
           <button
@@ -56,7 +55,7 @@
           >Sign up</button>
         </form>
         <!-- /form -->
-        <a href="#" class="forgot-password">login with google ?</a>
+        <!-- <a href="#" class="forgot-password">login with google ?</a> -->
         <button
           class="btn btn-lg btn-success btn-block btn-signup"
           id="signin"
@@ -158,7 +157,9 @@ html {
   max-width: 350px;
   padding: 40px 40px;
 }
-
+.card-container.card {
+  padding: 40px 40px;
+}
 .btn {
   font-weight: 700;
   height: 36px;
