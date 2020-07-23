@@ -8,6 +8,8 @@ import file from '@/components/file'
 import meeting from '@/components/meeting'
 import notification from '@/components/notification'
 import exercise from '@/components/exercise'
+import ex from '@/components/ex'
+import exAdmin from '@/components/exAdmin'
 import error from '@/components/error'
 
 Vue.use(Router)
@@ -59,6 +61,16 @@ const router = new Router({
       path: '/meeting/:id',
       name: 'meeting',
       component: meeting
+    },
+    {
+      path: '/ex/:id',
+      name: 'Exercise',
+      component: ex
+    },
+    {
+      path: '/exAdmin/:id',
+      name: 'Manage',
+      component: exAdmin
     },
     {
       path: '*',
