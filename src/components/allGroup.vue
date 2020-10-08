@@ -1,23 +1,21 @@
 <template>
-  <div class="row">
-    <div class="col-1custom" style="z-index:999">
-      <Header />
-    </div>
-
-    <editGroup
+  <div>
+    <EditGroup
       v-show="showModal"
       @editGroup="editGroup"
       @close="showModal=false;"
       :groupJoin="groupJoin"
     />
-    <confirm v-if="groupDel" @close="groupDel=null" @comfimDel="confirmDel()" :option="delOption" :group="groupDel" />
-    <div v-if="showNotice" class="notice" style="margin-top: 20px">
+    <Confirm v-if="groupDel" @close="groupDel=null" @comfimDel="confirmDel()" :option="delOption" :group="groupDel" />
+    <!-- <div v-if="showNotice" class="notice" style="margin-top: 20px">
       <div style="background: #2c3e50">
         <h5 style="padding: 5px;color: #fff"><b>Thông báo</b> </h5>
       </div >
       <h4 style="padding: 10px 5px 5px 5px">{{showNotice}}</h4>
-    </div>
-    <div class="col-11custom">
+    </div> -->
+    <TopNotice v-if="showNotice" :content="showNotice" />
+
+   
       <div class="row">
         <div class="d-flex flex-row-reverse">
           <div class="p-2">
@@ -39,7 +37,6 @@
           </div>
         </div>
       </div>
-
       <div class="d-flex justify-content-around" style="flex-wrap:wrap">
         <div class="card" style="width: 18rem;" v-for="(group, index) in groups" :key="index">
           <div
@@ -82,18 +79,19 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 <script>
-import header from "./layout/header.vue";
 import editGroup from "./groupModal/editGroup";
 import axios from "axios";
 import confirmModal from "./groupModal/confirmModal";
+import topNotice from "./notice/topNotice";
+
 export default {
   components: {
-    Header: header,
-    editGroup: editGroup,
-    confirm: confirmModal
+    EditGroup: editGroup,
+    Confirm: confirmModal,
+    TopNotice: topNotice,
+
   },
   data() {
     return {
@@ -196,9 +194,6 @@ export default {
   cursor: pointer;
   opacity: 1;
 }
-
-
-
 .card {
   margin: 2%;
 }
@@ -210,69 +205,4 @@ export default {
   border: 2px solid #d19b3d;
 }
 
-.modal-mask {
-  -webkit-transition: display 1s; /* Safari */
-  transition: display 1s;
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 300px;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
-}
-
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
-}
-
-.modal-body {
-  margin: 20px 0;
-}
-
-.modal-default-button {
-  float: right;
-}
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
 </style>

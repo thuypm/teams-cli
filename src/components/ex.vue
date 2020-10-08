@@ -1,8 +1,6 @@
 <template>
  <div class="row">
-    <div class="col-1custom">
-      <Header />
-    </div>
+
     <div class="col-11custom">
       <div class="row">
         <div class="col-8" style="text-align: left">
@@ -136,11 +134,11 @@
   </div>
 </template>
 <script>
-import header from "./layout/header.vue";
+
 import axios from "axios";
 export default {
   components: {
-    Header: header
+
   },
   data() {
     return {

@@ -1,8 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-1custom">
-      <Header />
-    </div>
+
     <div class="col-11custom">
 
       <div class="d-flex justify-content-around" style="flex-wrap:wrap; padding-top: 4%">
@@ -40,11 +38,11 @@
   </div>
 </template>
 <script>
-import header from "./layout/header.vue";
+
 import axios from "axios";
 export default {
   components: {
-    Header: header
+
   },
   data() {
     return {

@@ -1,10 +1,7 @@
 <template>
   <div class="row">
-    <!-- <div>{{$route.params.id }}</div> -->
-    <div class="col-1custom">
-      <Header />
-    </div>
-    <div :class="{'col-9custom': option, 'col-11custom': !option}">
+    <!-- <button @click="getNotice()">click đi</button> -->
+    <div :class="{'col-10custom': option, 'col-12custom': !option}">
       <Video @changeOpt="option=$event" :socket="socket" :roomId="$route.params.id" />
     </div>
     <div class="col-2custom">
@@ -15,22 +12,22 @@
 </template>
 
 <script>
-import header from "./layout/header.vue";
+
 import video from "./meeting/video";
 import chat from "./meeting/chat";
 import listUser from "./meeting/listUser";
 var io = require("socket.io-client");
 // import io from 'socket.io-client';
-var socket = io.connect("http://thuypm.tk:3000");
+var socket = io.connect("http://thuypm.tk:3000/meeting");
 export default {
   name: "index",
   components: {
-    Header: header,
     Chat: chat,
     Video: video,
     ListUser: listUser
   },
   created() {
+    console.log(this.$route.params.id);
     this.socket.emit("join", this.username, this.$route.params.id);
     this.socket.on("room-not-found", () => {
       alert("có lỗi xảy ra hoặc phòng không còn tồn tại");
@@ -43,6 +40,11 @@ export default {
       socket: socket,
       username: localStorage.username
     };
+  },
+  methods: {
+    getNotice(){
+     this.socket.emit("test", "đây là nội dung thông báo", this.$route.params.id)
+    }
   }
 };
 </script>

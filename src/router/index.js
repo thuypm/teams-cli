@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import index from '@/pages/index'
 import chat from '@/components/chat'
-import signin from '@/components/signin'
+import signin from '@/pages/signin'
 import allGroup from '@/components/allGroup'
-import signup from '@/components/signup'
+import signup from '@/pages/signup'
 import file from '@/components/file'
 import meeting from '@/components/meeting'
 import notification from '@/components/notification'
@@ -19,58 +20,69 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      component: allGroup
+      component: index,
+      redirect: "/allGroup",
+      children: 
+      [
+        // {
+        //   path: '',
+        //   name: 'index',
+        //   component: allGroup
+        // },
+        {
+          path: 'chat',
+          name: 'chat',
+          component: chat
+        },
+    
+        {
+          path: 'allGroup',
+          name: 'allGroup',
+          component: allGroup
+        },
+    
+        {
+          path: 'file',
+          name: 'file',
+          component: file
+        },
+        {
+          path: 'notification',
+          name: 'notification',
+          component: notification
+        },
+        {
+          path: 'exercise',
+          name: 'exercise',
+          component: exercise
+        },
+        {
+          path: 'meeting/:id',
+          name: 'meeting',
+          component: meeting
+        },
+        {
+          path: 'ex/:id',
+          name: 'Exercise',
+          component: ex
+        },
+        {
+          path: 'exAdmin/:id',
+          name: 'Manage',
+          component: exAdmin
+        },
+      ]
     },
-    {
-      path: '/chat',
-      name: 'chat',
-      component: chat
-    },
+    
     {
       path: '/signin',
       name: 'signin',
       component: signin
     },
     {
-      path: '/allGroup',
-      name: 'allGroup',
-      component: allGroup
-    },
-    {
       path: '/signup',
       name: 'signup',
       component: signup
-    },
-    {
-      path: '/file',
-      name: 'file',
-      component: file
-    },
-    {
-      path: '/notification',
-      name: 'notification',
-      component: notification
-    },
-    {
-      path: '/exercise',
-      name: 'exercise',
-      component: exercise
-    },
-    {
-      path: '/meeting/:id',
-      name: 'meeting',
-      component: meeting
-    },
-    {
-      path: '/ex/:id',
-      name: 'Exercise',
-      component: ex
-    },
-    {
-      path: '/exAdmin/:id',
-      name: 'Manage',
-      component: exAdmin
     },
     {
       path: '*',
@@ -80,32 +92,33 @@ const router = new Router({
   ],
 
 })
-router.beforeEach((to, from, next)=>{
-  switch(to.fullPath){
-  case '/signin':
-    {
-      if(localStorage.token != undefined)
-      next('/')
-    else 
-      next();
-      break;
-    };
-  case '/signup':
+router.beforeEach((to, from, next) => {
+  switch (to.fullPath) {
+    case '/signin':
       {
-        if(localStorage.token != undefined)
-       {   alert('vui lòng đăng xuất trước');
+        if (localStorage.token != undefined)
           next('/')
-      }
-      else 
-        next();
+        else
+          next();
         break;
       };
-      default: {
-        if(localStorage.token != undefined)
-        next()
+    case '/signup':
+      {
+        if (localStorage.token != undefined) {
+          alert('vui lòng đăng xuất trước');
+          next('/')
+        }
         else
-        next('/signin')
+          next();
         break;
-      }
-  }})
-  export default router;
+      };
+    default: {
+      if (localStorage.token != undefined)
+        next()
+      else
+        next('/signin')
+      break;
+    }
+  }
+})
+export default router;
